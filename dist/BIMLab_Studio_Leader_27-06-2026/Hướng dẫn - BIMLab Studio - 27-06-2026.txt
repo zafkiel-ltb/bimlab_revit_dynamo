@@ -19,11 +19,6 @@ CHUAN BI
        }
 
   3) Gmail Leader da co trong database local cua Auth Server va dang active.
-  4) May Leader co file:
-       C:\ProgramData\BIMLab\DynLock\secrets.json
-
-     MasterKeyBase64 phai trung voi BIMLab Player cua member.
-
 ------------------------------------------------------------------
 CACH DUNG
 ------------------------------------------------------------------
@@ -53,7 +48,7 @@ LUU Y
 ------------------------------------------------------------------
   - Chi gui file .dynx cho member, khong gui file .dyn goc.
   - Neu 2 plugin dung chung ten panel, ben member se duoc gom vao cung 1 panel.
-  - Neu doi MasterKeyBase64, phai ma hoa lai cac file .dynx cu.
   - Neu doi dia chi server, chi can sua AuthServerUrl trong authserver.json.
+  - Key ma hoa da nam san trong app. Leader khong can cau hinh key.
 
 ==================================================================

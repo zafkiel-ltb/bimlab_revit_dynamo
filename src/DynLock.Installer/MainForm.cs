@@ -225,13 +225,10 @@ namespace DynLock.Installer
                 }
 
                 InstallDynamoPackages();
-                WriteTemplateIfMissing(
-                    Path.Combine(Base, "secrets.json"),
-                    "{\r\n  \"MasterKeyBase64\": \"<set-base64-master-key>\"\r\n}\r\n");
                 File.WriteAllText(
                     Path.Combine(Base, "authserver.json"),
                     "{\r\n  \"AuthServerUrl\": \"" + authServerUrl.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"\r\n}\r\n");
-                Log("[OK] Tạo template secrets.json và authserver.json nếu chưa có.");
+                Log("[OK] Tạo authserver.json.");
                 TryCreateShortcut();
 
                 Log(">>> CÀI ĐẶT XONG <<<");

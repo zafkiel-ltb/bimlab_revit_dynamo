@@ -42,9 +42,7 @@ namespace DynLock.Core
             string value = ResolveMasterKeyBase64();
             if (!IsConfiguredValue(value))
             {
-                throw new InvalidOperationException(
-                    "Missing DynLock master key. Set environment variable " + MasterKeyEnvVar +
-                    " or create " + SecretsConfigPath + " with a valid MasterKeyBase64 value.");
+                value = Secrets.BuiltInMasterKeyBase64;
             }
 
             return value.Trim();
@@ -66,10 +64,7 @@ namespace DynLock.Core
             string base64 = ResolveMasterKeyBase64();
             if (!IsConfiguredValue(base64))
             {
-                error =
-                    "Missing DynLock master key. Set environment variable " + MasterKeyEnvVar +
-                    " or create " + SecretsConfigPath + " with a valid MasterKeyBase64 value.";
-                return false;
+                base64 = Secrets.BuiltInMasterKeyBase64;
             }
 
             try

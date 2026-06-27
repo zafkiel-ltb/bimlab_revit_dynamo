@@ -11,7 +11,7 @@ namespace DynLock.Encryptor
     ///   DynLockEncrypt.exe file.dyn                 -> tạo file.dynx cùng thư mục
     ///   DynLockEncrypt.exe file.dyn D:\Out          -> tao D:\Out\file.dynx
     ///   DynLockEncrypt.exe D:\Scripts               -> mã hóa mọi *.dyn trong thư mục
-            ///   DynLockEncrypt.exe --genkey                 -> sinh key mới (ghi vào secrets.json hoặc env var)
+    ///   DynLockEncrypt.exe --genkey                 -> sinh key mới cho cấu hình nâng cao
     /// Cũng có thể kéo-thả file/thư mục .dyn vào file .exe này.
     /// </summary>
     internal static class Program
@@ -31,7 +31,7 @@ namespace DynLock.Encryptor
             {
                 var key = new byte[32];
                 using (var rng = RandomNumberGenerator.Create()) rng.GetBytes(key);
-                Console.WriteLine("Key mới (ghi vào secrets.json hoặc env var DYNLOCK_MASTER_KEY_BASE64):");
+                Console.WriteLine("Key mới cho cấu hình nâng cao (secrets.json hoặc env var DYNLOCK_MASTER_KEY_BASE64):");
                 Console.WriteLine(Convert.ToBase64String(key));
                 return 0;
             }

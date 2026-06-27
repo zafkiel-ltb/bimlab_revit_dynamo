@@ -85,16 +85,12 @@ Invoke-RestMethod "http://192.168.1.50:5050/api/auth/check?email=leader@gmail.co
    ```
    dotnet build DynLock.sln -c Release
    ```
-2. **Doi key ma hoa** (bat buoc, lam 1 lan):
-   - Chạy `DynLockEncrypt.exe --genkey`, copy key moi.
-   - Dan vao `src/DynLock.Core/Secrets.cs` -> build lai toan bo solution.
-   - Giu `DynLockEncrypt.exe` cho rieng minh, **khong** phat cho nhan vien.
-3. **Ma hoa script**:
+2. **Ma hoa script**:
    ```
    DynLockEncrypt.exe "FILE DYNAMO GUI TEAM IOT.dyn"
    ```
    -> tao `FILE DYNAMO GUI TEAM IOT.dynx`. Xóa/cat file `.dyn` goc, chi phat `.dynx`.
-4. **Cai addin cho nhan vien** (moi may):
+3. **Cai addin cho nhan vien** (moi may):
    - Cach de nhat: chay `Cai dat BIMLab DynLock.exe` (project `DynLock.Installer`).
    - Hoac tay: copy `DynLock.Addin.dll` + `DynLock.Core.dll` + `Newtonsoft.Json.dll`
      vao `C:\ProgramData\BIMLab\DynLock\`, copy `install\DynLock.addin` vao
@@ -105,13 +101,13 @@ Invoke-RestMethod "http://192.168.1.50:5050/api/auth/check?email=leader@gmail.co
      sot lai khong noi day). Neu mot cong cu khac *thuc su* dung node package,
      addin se tu bao ten package con thieu cho nhan vien truoc khi chay
      (package cai trong `%AppData%\Dynamo\Dynamo Revit\<phien ban>\packages`).
-5. **Phan phoi file .dynx** - chon 1 trong 2:
+4. **Phan phoi file .dynx** - chon 1 trong 2:
    - Tha vao folder share roi tao `C:\ProgramData\BIMLab\DynLock\config.json`:
      ```json
      { "ScriptFolders": [ "\\\\server\\share\\dynx" ] }
      ```
    - Hoac tao folder `Scripts` canh `DynLock.Addin.dll` va bo file `.dynx` vao.
-6. **Test**: mo Revit -> tab **BIMLab** -> **Run Tool** -> chon script -> dien
+5. **Test**: mo Revit -> tab **BIMLab** -> **Run Tool** -> chon script -> dien
    5 thong so (layer coc, level, quet chon CAD, family coc, ten parameter) ->
    Chạy. Kiem tra coc duoc model dung nhu khi chay bang Dynamo thuong.
 
@@ -126,7 +122,8 @@ khong thay Dynamo graph hay file JSON doc duoc.
 
 ## Gioi han can biet
 
-- **Key nam trong DLL**: nguoi biet decompile (dnSpy) co the moi key ra. Voi muc
+- **Key ma hoa nam san trong app**: nguoi dung Leader/Member khong can cau hinh key.
+  Nguoi biet decompile (dnSpy) co the moi key ra. Voi muc
   dich noi bo la du; muon chac hon thi obfuscate DLL (ConfuserEx/Dotfuscator)
   hoac chuyen key sang server cap phat.
 - **File tam**: luc chay, graph giai ma duoc ghi ra `%TEMP%` voi ten ngau nhien
@@ -134,7 +131,7 @@ khong thay Dynamo graph hay file JSON doc duoc.
 - **Node input ho tro tren form**: String, Number, Bool, dropdown Level,
   dropdown Family Type, chon element (1 hoac nhieu). Kieu input khac se giu
   nguyen gia tri da luu trong graph.
-- Khi doi key, moi file `.dynx` cu phai ma hoa lai.
+- Neu doi key nang cao bang env/secrets.json, moi file `.dynx` cu phai ma hoa lai.
 
 ## Cach addin chay graph ngam (ky thuat)
 
