@@ -523,7 +523,7 @@ namespace DynLock.Addin.UI
 
             try
             {
-                HideInputFormForSelection(keepVisibleShell: true);
+                HideInputFormForSelection(keepVisibleShell: ShouldKeepVisibleShellForSelection());
                 ActivateRevitForSelection();
 
                 IList<Reference> references = uidoc.Selection.PickObjects(
@@ -555,6 +555,12 @@ namespace DynLock.Addin.UI
 
                 RestoreInputFormAfterSelection(oldShowInTaskbar, oldTopMost);
             }
+        }
+
+        private bool ShouldKeepVisibleShellForSelection()
+        {
+            string version = _uiApp?.Application?.VersionNumber;
+            return int.TryParse(version, out int year) && year <= 2024;
         }
 
         private void HideInputFormForSelection(bool keepVisibleShell = false)
