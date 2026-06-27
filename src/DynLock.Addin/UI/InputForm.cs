@@ -523,7 +523,7 @@ namespace DynLock.Addin.UI
 
             try
             {
-                HideInputFormForSelection();
+                HideInputFormForSelection(keepVisibleShell: true);
                 ActivateRevitForSelection();
 
                 IList<Reference> references = uidoc.Selection.PickObjects(
