@@ -46,6 +46,7 @@ namespace DynLock.Addin.UI
         private bool _selectionUsedVisibleShell;
         private double _selectionSavedOpacity = 1.0;
         private FormWindowState _selectionSavedWindowState = FormWindowState.Normal;
+        private bool _selectionInProgress;
 
         private sealed class RowState
         {
@@ -565,6 +566,7 @@ namespace DynLock.Addin.UI
 
         private void HideInputFormForSelection(bool keepVisibleShell = false)
         {
+            _selectionInProgress = true;
             _selectionUsedVisibleShell = keepVisibleShell;
             _selectionSavedOpacity = Opacity;
             _selectionSavedWindowState = WindowState;
@@ -615,6 +617,7 @@ namespace DynLock.Addin.UI
                     if (ticks >= 6)
                     {
                         TopMost = oldTopMost;
+                        _selectionInProgress = false;
                         retryTimer.Stop();
                         retryTimer.Dispose();
                     }
@@ -644,6 +647,24 @@ namespace DynLock.Addin.UI
             Focus();
             Activate();
             SetForegroundWindow(Handle);
+        }
+
+        // A Revit PickObjects is finished by the user pressing Enter (Revit's "Finish" gesture)
+        // or cancelled with Escape. On Revit 2024 the form stays visible during the pick (opacity
+        // shell), so that finishing keystroke can reach this still-modal dialog as it regains focus
+        // and be promoted to the AcceptButton (-> OnRunClicked -> DialogResult.OK -> Close) or the
+        // CancelButton (-> DialogResult.Cancel), dismissing the form before the user sees the picked
+        // result. Swallow those two keys until the form is fully restored after a selection.
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (_selectionInProgress)
+            {
+                Keys key = keyData & Keys.KeyCode;
+                if (key == Keys.Enter || key == Keys.Escape)
+                    return true;
+            }
+
+            return base.ProcessDialogKey(keyData);
         }
 
         private void ActivateRevitForSelection()
