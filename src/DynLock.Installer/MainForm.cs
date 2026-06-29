@@ -331,19 +331,16 @@ namespace DynLock.Installer
             string core = Path.Combine(dir, "DynLock.Core.dll");
             string json = Path.Combine(dir, "Newtonsoft.Json.dll");
 
-            // Always repair missing payloads. This avoids stale .addin files after uninstall/reinstall.
-            if (!_extracted.Contains(fw) || !File.Exists(addin))
-                ExtractTo(fw + ".DynLock.Addin.dll", addin);
-            if (!_extracted.Contains(fw) || !File.Exists(core))
-                ExtractTo(fw + ".DynLock.Core.dll", core);
-            if (!_extracted.Contains(fw) || !File.Exists(json))
-                ExtractTo(fw + ".Newtonsoft.Json.dll", json);
+            // Always overwrite the embedded runtime payload so a reinstall/update can never
+            // leave Revit loading a stale DynLock.Addin.dll from a previous version.
+            ExtractTo(fw + ".DynLock.Addin.dll", addin);
+            ExtractTo(fw + ".DynLock.Core.dll", core);
+            ExtractTo(fw + ".Newtonsoft.Json.dll", json);
 
             if (fw == "net8")
             {
                 string deps = Path.Combine(dir, "DynLock.Addin.deps.json");
-                if (!_extracted.Contains(fw) || !File.Exists(deps))
-                    ExtractTo("net8.DynLock.Addin.deps.json", deps);
+                ExtractTo("net8.DynLock.Addin.deps.json", deps);
             }
 
             _extracted.Add(fw);

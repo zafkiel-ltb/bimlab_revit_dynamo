@@ -38,7 +38,7 @@ namespace DynLock.Addin.UI
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         private const int SW_RESTORE = 9;
-        private const int SelectionGuardMilliseconds = 750;
+        private const int SelectionGuardMilliseconds = 1500;
 
         private readonly UIApplication _uiApp;
         private readonly DynInputPatcher _patcher;
@@ -674,9 +674,6 @@ namespace DynLock.Addin.UI
                 if (IsDisposed)
                     return;
 
-                if (_selectionInProgress)
-                    StartSelectionGuardCooldown();
-
                 ForceShowInputForm(oldShowInTaskbar, oldTopMost);
                 Application.DoEvents();
 
@@ -701,6 +698,13 @@ namespace DynLock.Addin.UI
                         TopMost = oldTopMost;
                         retryTimer.Stop();
                         retryTimer.Dispose();
+
+                        // Start the post-selection cooldown only AFTER the retry timer has
+                        // finished forcing focus. Until here _selectionInProgress stays true, so
+                        // the guard covers the entire Revit 2024 restore window; a late
+                        // Finish/Enter event can no longer slip through a gap and close the form.
+                        if (_selectionInProgress)
+                            StartSelectionGuardCooldown();
                     }
                 };
                 retryTimer.Start();
