@@ -28,6 +28,9 @@
     <EmbeddedResource Include="..\DynLock.Core\bin\Release\net48\DynLock.Core.dll">
       <LogicalName>DynLock.Core.dll</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\DynLock.Core\bin\Release\net48\Newtonsoft.Json.dll">
+      <LogicalName>Newtonsoft.Json.dll</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\bimlab-logo.png">
       <LogicalName>DynLock.EncryptorGui.Resources.bimlab-logo.png</LogicalName>
     </EmbeddedResource>

@@ -1,0 +1,36 @@
+HUONG DAN NHAN VIEN - BIMLab Player
+
+1. Cai dat
+- Chay `BIMLab Player.exe`
+- Chon Revit 2024, 2025, hoac 2026
+- Bam `Cai add-in`
+- Mo lai Revit
+
+2. Dang nhap
+- Vao tab `BIMLab`
+- Bam `Login`
+- Nhap email duoc cap quyen
+
+3. Load plugin
+- Bam `Load`
+- Chon file `.dynx` do leader gui
+- Sau khi load, app hien preview chi gom:
+  - Panel
+  - Plugin
+  - Icon
+- Nut plugin se duoc them vao ribbon neu con slot trong
+
+4. Chay cong cu
+- Bam nut plugin vua duoc nap
+- Neu co input CAD, bam `Chon...`
+- Chon CAD trong Revit, bam `Finish`
+- Hoan tat input va bam `Chay`
+
+5. Thu muc can biet
+- `C:\ProgramData\BIMLab\DynLock\Scripts\` la noi luu file `.dynx`
+- `%AppData%\Dynamo\Dynamo Revit\<version>\packages` la noi lay Dynamo packages
+
+6. Neu loi
+- Neu khong thay tab BIMLab, kiem tra da cai add-in dung version chua
+- Neu khong load duoc file, kiem tra file `.dynx` co bi loi hoac sai key khong
+- Neu cong cu bao thieu package, bao leader cai package do tren may

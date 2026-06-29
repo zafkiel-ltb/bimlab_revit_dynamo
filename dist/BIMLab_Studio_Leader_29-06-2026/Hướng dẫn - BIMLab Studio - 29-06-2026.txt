@@ -1,0 +1,43 @@
+HUONG DAN TEAM LEAD - BIMLab Studio
+
+Muc tieu:
+- Ma hoa file Dynamo `.dyn` thanh `.dynx`
+- Them metadata plugin vao file `.dynx`
+- Phat file `.dynx` cho member
+
+Luong lam viec:
+1. Mo `BIMLab Studio.exe`
+2. Dang nhap tai khoan leader
+3. Add file `.dyn`
+4. Dien:
+   - Panel
+   - Plugin
+   - Icon
+5. Bam `Ma hoa tat ca`
+6. File `.dynx` duoc tao ra cung thu muc voi file `.dyn`
+
+Noi dung ben trong `.dynx`:
+- Graph Dynamo da ma hoa
+- Panel name
+- Plugin name
+- Icon
+- Ten file goc
+
+Khi can test:
+- Gui `.dynx` cho member
+- Member bam `Load`
+- Neu preview hien Panel/Plugin/Icon va nut ribbon duoc tao, luong da dung
+
+Quan trong:
+- Giu kin key trong `Secrets.cs`
+- Neu doi key, phai ma hoa lai tat ca file cu
+- Chi phat `.dynx`, khong phat `.dyn`
+
+Noi lay package:
+- Team lead co the cai package hoac chuan bi san
+- Member se lay package tu `C:\ProgramData\BIMLab\DynLock\Scripts\`
+
+Neu can sua:
+- Mo lai file `.dyn`
+- Sua graph
+- Ma hoa lai
