@@ -38,11 +38,17 @@ namespace DynLock.Addin.UI
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         private const int SW_RESTORE = 9;
+        private const int SelectionGuardMilliseconds = 750;
 
         private readonly UIApplication _uiApp;
         private readonly DynInputPatcher _patcher;
         private readonly List<RowState> _rows = new List<RowState>();
         private readonly Dictionary<DynInputItem, List<string>> _pickedIds;
+        private bool _selectionInProgress;
+        private DateTime _selectionGuardUntilUtc = DateTime.MinValue;
+        private IButtonControl _selectionSavedAcceptButton;
+        private IButtonControl _selectionSavedCancelButton;
+        private Timer _selectionGuardTimer;
         private bool _selectionUsedVisibleShell;
         private double _selectionSavedOpacity = 1.0;
         private FormWindowState _selectionSavedWindowState = FormWindowState.Normal;
@@ -523,7 +529,8 @@ namespace DynLock.Addin.UI
 
             try
             {
-                HideInputFormForSelection(keepVisibleShell: ShouldKeepVisibleShellForSelection());
+                bool keepVisibleShell = ShouldKeepVisibleShellForSelection();
+                HideInputFormForSelection(keepVisibleShell);
                 ActivateRevitForSelection();
 
                 IList<Reference> references = uidoc.Selection.PickObjects(
@@ -563,8 +570,82 @@ namespace DynLock.Addin.UI
             return int.TryParse(version, out int year) && year <= 2024;
         }
 
+        private void BeginSelectionGuard()
+        {
+            _selectionGuardTimer?.Stop();
+            _selectionGuardTimer?.Dispose();
+            _selectionGuardTimer = null;
+
+            if (AcceptButton != null)
+                _selectionSavedAcceptButton = AcceptButton;
+            if (CancelButton != null)
+                _selectionSavedCancelButton = CancelButton;
+
+            AcceptButton = null;
+            CancelButton = null;
+            _selectionInProgress = true;
+            _selectionGuardUntilUtc = DateTime.MaxValue;
+        }
+
+        private void StartSelectionGuardCooldown()
+        {
+            _selectionInProgress = false;
+            _selectionGuardUntilUtc = DateTime.UtcNow.AddMilliseconds(SelectionGuardMilliseconds);
+
+            _selectionGuardTimer = new Timer { Interval = SelectionGuardMilliseconds };
+            _selectionGuardTimer.Tick += (_, __) => ReleaseSelectionGuardIfReady();
+            _selectionGuardTimer.Start();
+        }
+
+        private void ReleaseSelectionGuardIfReady()
+        {
+            if (!IsDisposed && DateTime.UtcNow < _selectionGuardUntilUtc)
+                return;
+
+            _selectionGuardTimer?.Stop();
+            _selectionGuardTimer?.Dispose();
+            _selectionGuardTimer = null;
+
+            if (IsDisposed)
+                return;
+
+            AcceptButton = _selectionSavedAcceptButton;
+            CancelButton = _selectionSavedCancelButton;
+            _selectionSavedAcceptButton = null;
+            _selectionSavedCancelButton = null;
+            _selectionGuardUntilUtc = DateTime.MinValue;
+        }
+
+        private bool IsSelectionGuardActive()
+        {
+            return _selectionInProgress || DateTime.UtcNow < _selectionGuardUntilUtc;
+        }
+
+        private static bool IsSelectionGuardKey(Keys keyData)
+        {
+            Keys keyCode = keyData & Keys.KeyCode;
+            return keyCode == Keys.Enter || keyCode == Keys.Escape || keyCode == Keys.Space;
+        }
+
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (IsSelectionGuardActive() && IsSelectionGuardKey(keyData))
+                return true;
+
+            return base.ProcessDialogKey(keyData);
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (IsSelectionGuardActive() && IsSelectionGuardKey(keyData))
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         private void HideInputFormForSelection(bool keepVisibleShell = false)
         {
+            BeginSelectionGuard();
             _selectionUsedVisibleShell = keepVisibleShell;
             _selectionSavedOpacity = Opacity;
             _selectionSavedWindowState = WindowState;
@@ -592,6 +673,9 @@ namespace DynLock.Addin.UI
             {
                 if (IsDisposed)
                     return;
+
+                if (_selectionInProgress)
+                    StartSelectionGuardCooldown();
 
                 ForceShowInputForm(oldShowInTaskbar, oldTopMost);
                 Application.DoEvents();
@@ -673,6 +757,9 @@ namespace DynLock.Addin.UI
 
         private void OnRunClicked()
         {
+            if (IsSelectionGuardActive())
+                return;
+
             foreach (var row in _rows)
             {
                 var item = row.Item;
